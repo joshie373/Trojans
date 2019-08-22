@@ -6,6 +6,6 @@ Joshua Hughes - Bellevue University
 
 April Auger - Bellevue University
 
-Troy Alcala - Bellevue University
+Keith Kozma - Bellevue University
 
 Richard Krasso - Bellevue University
