@@ -1,0 +1,26 @@
+/* 
+============================================
+; Title: site.css
+; Authors: Joshua Hughes
+;           April Auger
+;           Kieth Kozma
+; Date:   10 september 2019
+; Description: Javascript trivia custom stylesheet
+;===========================================
+*/
+
+.round-heavy-top{
+    border-radius: .75em .75em 0 0;
+}
+
+.round-heavy-bottom{
+    border-radius: 0 0 .75em .75em;
+}
+
+.round-heavy-right{
+    border-radius: 0 .75em .75em 0;
+}
+
+.round-heavy-left{
+    border-radius: .75em 0 0 .75em;
+}

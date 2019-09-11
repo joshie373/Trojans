@@ -1,6 +1,6 @@
 <!-- 
 ============================================
-; Title: index.html
+; Title: index
 ; Authors: Joshua Hughes
 ;           April Auger
 ;           Kieth Kozma
@@ -17,9 +17,21 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Javascript Trivia</title>
 
-    <!-- latest bootstrap CSS style link -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
+        <!-- Stylesheet - Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+        <link rel="stylesheet" href="../styles/site.css">
+
+        <!-- JavaScript Libraries -->
+        <script src="../knockout-3.5.0.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <style>
+     
+
+        </style>
+
+
+    </head>
 <body>
     <!-- Header -->
     <div class="card-body text-center col-sm-6 offset-sm-3" >
@@ -31,33 +43,241 @@
     <div class="row text-center">
         <!-- Left Column 25% -->
         <!-- Border shown for clarity, will not be on finished product -->
-        <div class="col-md-3 border">
-            left
+        <div class="col-md-3">
         </div>
 
         <!-- Center Column 50% -->
         <!-- Border shown for clarity, will not be on finished product -->
-        <div class="col-md-6 border">
-            center(main)
+        <div class="col-md-6">
             <!-- Main content Div -->
-            <div class="card card-body" id="centerMain">
-                <h3 class="h3">Trivia</h3>
-                <hr>
+            <div class="well" id="centerMain">
+                <h3 class="h3 alert-primary p-3 round-heavy-top mb-0">Trivia</h3>
+                <div id="triviaMain" class="well bg-secondary round-heavy-bottom">
+                    <br>
+                    <h4 id="question" class="bg-secondary" data-bind="text: question"></h4>
+                    <br>
+                    <table id="tblAnswers" class="text-center w-25 m-auto">
+                            <tbody  data-bind='foreach: answersArray'>
+                                <tr class="spacer"></tr>
+                                    <tr class="alert-dark m-1 p-3">
+                                    <td class="round-heavy-left" data-bind='text: answerNum'></td>
+                                    <td class="round-heavy-right" data-bind='text: answerText'></td> 
+                                </tr>
+                                <tr class="spacer"><td></td><td></td></tr>
+                                <tr class="spacer"><td></td><td></td></tr>
+                                <tr class="spacer"><td></td><td></td></tr>
+                            </tbody>
+                          </table>
+                    <br>
+                </div>
+                <button id="btnStart" type="button" class="btn btn-secondary btn-lg btn-block round-heavy-bottom">Start Trivia Now</button>
             </div>
+            <button type="button" class="btn btn-primary float-left btnCount" id="btnPrev" data-value="-1">Previous</button>
+            <button type="button" class="btn btn-primary float-right btnCount" id="btnNext" data-value="1">Next</button>
         </div>
 
         <!-- Right Column 25% -->
         <!-- Border shown for clarity, will not be on finished product -->
-        <div class="col-md-3 border">
-            right
+        <div class="col-md-3">
             <div class="col-sm-10 offset-sm-1 text-center">
                 <!-- Div for questions list -->
-                <div class="card card-body" id="rightMain">
-                    <h3 class="h3">Questions</h3>
-                    <hr>
+                <div class="well" id="rightMain">
+                    <h3 class="h3 alert-info round-heavy-top p-3 mb-0">Questions</h3>
+                    <div id="questionsMain" class="well bg-secondary mt-0 round-heavy-bottom">
+                        <p id="q1" class="m-0 ">Question 1</p>
+                        <p id="q2" class="m-1 ">Question 2</p>
+                        <p id="q3" class="m-1 ">Question 3</p>
+                        <p id="q4" class="m-1 ">Question 4</p>
+                        <p id="q5" class="m-1 ">Question 5</p>
+                        <p id="q6" class="m-1 ">Question 6</p>
+                        <p id="q7" class="m-1 ">Question 7</p>
+                        <p id="q8" class="m-1 ">Question 8</p>
+                        <p id="q9" class="m-1 ">Question 9</p>
+                        <p id="q10" class="m-1 ">Question 10</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
+<script>
+
+//Hides game elements on page load
+$(document).ready(function() {
+    $("#btnNext").hide();
+    $("#btnPrev").hide();
+    $("#triviaMain").hide();
+    $("#rightMain").hide();
+});
+
+//Jquery functions to make start button more responsive
+$("#btnStart").mouseover(function(){
+    $(this).removeClass("btn-secondary");
+    $(this).addClass("btn-primary");
+});
+$("#btnStart").mouseout(function(){
+    $(this).removeClass("btn-primary");
+    $(this).addClass("btn-secondary");
+});
+
+//jquery to start game.
+$("#btnStart").click(function(){
+    $(this).hide();
+    $("#btnNext").show();
+    $("#btnPrev").show();
+    $("#triviaMain").show();
+    $("#rightMain").show();
+});
+
+
+//view model creation
+function QuestionViewModel(ques,ansA,ansB,ansC,ansD){
+    this.answersArray = ko.observableArray([
+        {
+            answerNum:ko.observable("A. "),
+            answerText:ko.observable(ansA)
+        },
+        {
+            answerNum:ko.observable("B. "),
+            answerText:ko.observable(ansB)
+        },
+        {
+            answerNum:ko.observable("C. "),
+            answerText:ko.observable(ansC)
+        },
+        {
+            answerNum:ko.observable("D. "),
+            answerText:ko.observable(ansD)
+        }
+    ]);
+    this.question = ko.observable(ques);
+}
+
+//array of the questions and answers
+var questionsArray = [
+    //question 1
+    {
+        question: "this is q1",
+        answers : [
+            "answer 1",
+            "answer 2",
+            "answer 3",
+            "answer 4"
+        ]
+    },
+    //question 2
+    {
+        question: "this is q2",
+        answers : [
+            "answer 1",
+            "answer 2",
+            "answer 3",
+            "answer 4"
+        ]
+    },
+    //question 3
+    {
+        question: "this is q3",
+        answers : [
+            "answer 1",
+            "answer 2",
+            "answer 3",
+            "answer 4"
+        ]
+    },
+    //question 4
+    {
+        question: "this is q4",
+        answers : [
+            "answer 1",
+            "answer 2",
+            "answer 3",
+            "answer 4"
+        ]
+    },
+    //question 5
+    {
+        question: "this is q5",
+        answers : [
+            "answer 1",
+            "answer 2",
+            "answer 3",
+            "answer 4"
+        ]
+    },
+    //question 6
+    {
+        question: "this is q6",
+        answers : [
+            "answer 1",
+            "answer 2",
+            "answer 3",
+            "answer 4"
+        ]
+    },
+    //question 7
+    {
+        question: "this is q7",
+        answers : [
+            "answer 1",
+            "answer 2",
+            "answer 3",
+            "answer 4"
+        ]
+    },
+    //question 8
+    {
+        question: "this is q8",
+        answers : [
+            "answer 1",
+            "answer 2",
+            "answer 3",
+            "answer 4"
+        ]
+    },
+    //question 9
+    {
+        question: "this is q9",
+        answers : [
+            "answer 1",
+            "answer 2",
+            "answer 3",
+            "answer 4"
+        ]
+    },
+    //question 10
+    {
+        question: "this is q10",
+        answers : [
+            "answer 1",
+            "answer 2",
+            "answer 3",
+            "answer 4"
+        ]
+    }
+    
+];
+
+
+//****NOT YET OPERATIONAL********
+$(function() {
+    var count = 0;
+    var i = count;
+    var vm = new QuestionViewModel(questionsArray[i].question,questionsArray[i].answers[0],questionsArray[i].answers[1],questionsArray[i].answers[2],questionsArray[i].answers[3]);
+    ko.applyBindings(vm);
+    //on click add or subtract
+    $('.btnCount').click(function(){
+        i = Math.max(0, i + parseInt($(this).data('value')));
+
+
+        //apply bindings and viewmodel variable declaration
+        //*****FIX ME******(how to unbind,then rebind)
+        vm = new QuestionViewModel(questionsArray[i].question,questionsArray[i].answers[0],questionsArray[i].answers[1],questionsArray[i].answers[2],questionsArray[i].answers[3]);
+        ko.applyBindings(vm);
+
+
+    })
+});
+    
+</script>
 </html>
