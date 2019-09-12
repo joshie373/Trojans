@@ -24,3 +24,7 @@
 .round-heavy-left{
     border-radius: .75em 0 0 .75em;
 }
+
+.round-heavy{
+    border-radius: 1em 1em 1em 1em;
+}
