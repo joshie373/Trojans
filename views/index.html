@@ -25,6 +25,7 @@
         <!-- JavaScript Libraries -->
         <script src="../knockout-3.5.0.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
         <style>
      
 
@@ -55,18 +56,18 @@
                     <h3> Question <span data-bind="text: questionCount"></span></h3>
                     <h4 id="question" class="bg-secondary" data-bind="text: getQuestion"></h4>
                     <br>
-                    <div class="w-50 m-auto" id="tblBodyAnswers"  data-bind='foreach: getAnswers'>
-                        <a class="btn alert-dark btn-block round-heavy m-1 p-1 " >
-                                <span class="text-left float-left"  data-bind='text: ansNum'></span>
-                                <span class="text-right" data-bind='text: answer'></span>
-                        </a>
-                    </div>
+                    <div class="btn-group-vertical btn-group-toggle w-50 m-auto" data-toggle="buttons" data-bind='foreach: getAnswers'>
+                            <label class="btn btn-info p-0" ><span class="empty_fill p-1" data-bind="text: $data.ansNum +': '+$data.answer, click: function(data,event) { $parent.GetSelected(data); $parent.setSelected(event); }">
+                              <input type="radio" name="options" autocomplete="off" >
+                            </label><br>
+                        </span>
+                          </div>
                     <br>
                 </div>
                 <button id="btnStart" type="button" class="btn btn-secondary btn-lg btn-block round-heavy-bottom" data-bind="click: function() { startClick(); setQuestion(); setAnswers();}">Start Trivia Now</button>
             </div>
             <button type="button" class="btn btn-primary float-left btnCount" id="btnPrev" data-bind="click: function() { clickNext(-1); setQuestion(); setAnswers(); }, disable: firstQuestion">Previous</button>
-            <button type="button" class="btn btn-primary float-right btnCount" id="btnNext" data-bind="click: function() { clickNext(1); setQuestion(); setAnswers();}, disable: lastQuestion">Next</button>
+            <button type="button" class="btn btn-primary float-right btnCount" id="btnNext" data-bind="click: function() { clickNext(1); setQuestion(); setAnswers();}, disable: lastQuestion" >Next</button>
         </div>
 
         <!-- Right Column 25% -->
@@ -121,7 +122,7 @@ $("#btnStart").click(function(){
     $("#rightMain").show();
 });
 
-
+var Finalquestions = Array();
 
 //view model creation
 var QuestionViewModel = function(){
@@ -152,104 +153,104 @@ var QuestionViewModel = function(){
     this.questionsArray = ko.observableArray([
         //question 1
         {
-            question: ko.observable("this is q1"),
-            answers : ko.observableArray([
-                {ansNum: ko.observable("A: "), answer: ko.observable("answer 1")},
-                {ansNum: ko.observable("B: "), answer: ko.observable("answer 21")},
-                {ansNum: ko.observable("C: "), answer: ko.observable("answer 3")},
-                {ansNum: ko.observable("D: "), answer: ko.observable("answer 4")}
-            ])
-        },
-        //question 2
-        {
-            question: ko.observable("this is q2"),
-            answers : ko.observableArray([
-                {ansNum: ko.observable("A: "), answer: ko.observable("answer 1")},
-                {ansNum: ko.observable("B: "), answer: ko.observable("answer 22")},
-                {ansNum: ko.observable("C: "), answer: ko.observable("answer 3")},
-                {ansNum: ko.observable("D: "), answer: ko.observable("answer 4")}
-            ])
-        },
-        //question 3
-        {
-            question: ko.observable("this is q3"),
-            answers : ko.observableArray([
-                {ansNum: ko.observable("A: "), answer: ko.observable("answer 1")},
-                {ansNum: ko.observable("B: "), answer: ko.observable("answer 23")},
-                {ansNum: ko.observable("C: "), answer: ko.observable("answer 3")},
-                {ansNum: ko.observable("D: "), answer: ko.observable("answer 4")}
-            ])
-        },
-        //question 4
-        {
-            question: ko.observable("this is q4"),
-            answers : ko.observableArray([
-                {ansNum: ko.observable("A: "), answer: ko.observable("answer 1")},
-                {ansNum: ko.observable("B: "), answer: ko.observable("answer 24")},
-                {ansNum: ko.observable("C: "), answer: ko.observable("answer 3")},
-                {ansNum: ko.observable("D: "), answer: ko.observable("answer 4")}
-            ])
-        },
-        //question 5
-        {
-            question: ko.observable("this is q5"),
-            answers : ko.observableArray([
-                {ansNum: ko.observable("A: "), answer: ko.observable("answer 1")},
-                {ansNum: ko.observable("B: "), answer: ko.observable("answer 25")},
-                {ansNum: ko.observable("C: "), answer: ko.observable("answer 3")},
-                {ansNum: ko.observable("D: "), answer: ko.observable("answer 4")}
-            ])
-        },
-        //question 6
-        {
-            question: ko.observable("this is q6"),
-            answers : ko.observableArray([
-                {ansNum: ko.observable("A: "), answer: ko.observable("answer 1")},
-                {ansNum: ko.observable("B: "), answer: ko.observable("answer 26")},
-                {ansNum: ko.observable("C: "), answer: ko.observable("answer 3")},
-                {ansNum: ko.observable("D: "), answer: ko.observable("answer 4")}
-            ])
-        },
-        //question 7
-        {
-            question: ko.observable("this is q7"),
-            answers : ko.observableArray([
-                {ansNum: ko.observable("A: "), answer: ko.observable("answer 1")},
-                {ansNum: ko.observable("B: "), answer: ko.observable("answer 27")},
-                {ansNum: ko.observable("C: "), answer: ko.observable("answer 3")},
-                {ansNum: ko.observable("D: "), answer: ko.observable("answer 4")}
-            ])
-        },
-        //question 8
-        {
-            question: ko.observable("this is q8"),
-            answers : ko.observableArray([
-                {ansNum: ko.observable("A: "), answer: ko.observable("answer 1")},
-                {ansNum: ko.observable("B: "), answer: ko.observable("answer 28")},
-                {ansNum: ko.observable("C: "), answer: ko.observable("answer 3")},
-                {ansNum: ko.observable("D: "), answer: ko.observable("answer 4")}
-            ])
-        },
-        //question 9
-        {
-            question: ko.observable("this is q9"),
-            answers : ko.observableArray([
-                {ansNum: ko.observable("A: "), answer: ko.observable("answer 1")},
-                {ansNum: ko.observable("B: "), answer: ko.observable("answer 29")},
-                {ansNum: ko.observable("C: "), answer: ko.observable("answer 3")},
-                {ansNum: ko.observable("D: "), answer: ko.observable("answer 4")}
-            ])
-        },
-        //question 10
-        {
-            question: ko.observable("this is q10"),
-            answers : ko.observableArray([
-                {ansNum: ko.observable("A: "), answer: ko.observable("answer 1")},
-                {ansNum: ko.observable("B: "), answer: ko.observable("answer 20")},
-                {ansNum: ko.observable("C: "), answer: ko.observable("answer 3")},
-                {ansNum: ko.observable("D: "), answer: ko.observable("answer 4")}
-            ])
-        }
+        question: ko.observable("this is q1"),
+        answers : ko.observableArray([
+            { ansNum: "A", answer: "answer 1"},
+            { ansNum: "B", answer: "answer 21"},
+            { ansNum: "C", answer: "answer 3"},
+            { ansNum: "D", answer: "answer 4"}
+        ])
+    },
+    //question 2
+    {
+        question: ko.observable("this is q2"),
+        answers : ko.observableArray([
+            { ansNum: "A", answer: "answer 1"},
+            { ansNum: "B", answer: "answer 22"},
+            { ansNum: "C", answer: "answer 3"},
+            { ansNum: "D", answer: "answer 4"}
+        ])
+    },
+    //question 3
+    {
+        question: ko.observable("this is q3"),
+        answers : ko.observableArray([
+            { ansNum: "A", answer: "answer 1"},
+            { ansNum: "B", answer: "answer 23"},
+            { ansNum: "C", answer: "answer 3"},
+            { ansNum: "D", answer: "answer 4"}
+        ])
+    },
+    //question 4
+    {
+        question: ko.observable("this is q4"),
+        answers : ko.observableArray([
+            { ansNum: "A", answer: "answer 1"},
+            { ansNum: "B", answer: "answer 24"},
+            { ansNum: "C", answer: "answer 3"},
+            { ansNum: "D", answer: "answer 4"}
+        ])
+    },
+    //question 5
+    {
+        question: ko.observable("this is q5"),
+        answers : ko.observableArray([
+            { ansNum: "A", answer: "answer 1"},
+            { ansNum: "B", answer: "answer 25"},
+            { ansNum: "C", answer: "answer 3"},
+            { ansNum: "D", answer: "answer 4"}
+        ])
+    },
+    //question 6
+    {
+        question: ko.observable("this is q6"),
+        answers : ko.observableArray([
+            { ansNum: "A", answer: "answer 1"},
+            { ansNum: "B", answer: "answer 26"},
+            { ansNum: "C", answer: "answer 3"},
+            { ansNum: "D", answer: "answer 4"}
+        ])
+    },
+    //question 7
+    {
+        question: ko.observable("this is q7"),
+        answers : ko.observableArray([
+            { ansNum: "A", answer: "answer 1"},
+            { ansNum: "B", answer: "answer 27"},
+            { ansNum: "C", answer: "answer 3"},
+            { ansNum: "D", answer: "answer 4"}
+        ])
+    },
+    //question 8
+    {
+        question: ko.observable("this is q8"),
+        answers : ko.observableArray([
+            { ansNum: "A", answer: "answer 1"},
+            { ansNum: "B", answer: "answer 28"},
+            { ansNum: "C", answer: "answer 3"},
+            { ansNum: "D", answer: "answer 4"}
+        ])
+    },
+    //question 9
+    {
+        question: ko.observable("this is q9"),
+        answers : ko.observableArray([
+            { ansNum: "A", answer: "answer 1"},
+            { ansNum: "B", answer: "answer 29"},
+            { ansNum: "C", answer: "answer 3"},
+            { ansNum: "D", answer: "answer 4"}
+        ])
+    },
+    //question 10
+    {
+        question: ko.observable("this is q10"),
+        answers : ko.observableArray([
+            { ansNum: "A", answer: "answer 1"},
+            { ansNum: "B", answer: "answer 20"},
+            { ansNum: "C", answer: "answer 3"},
+            { ansNum: "D", answer: "answer 4"}
+        ])
+    }
     ]);
 
     //sets question text
@@ -264,8 +265,41 @@ var QuestionViewModel = function(){
         this.getAnswers(this.questionsArray()[this.questionCount()-1].answers());
     }
     
+    
+    //get selected answer
+    this.GetSelected = function(val){
+        var elem = {
+            q: this.questionCount(),
+            a: val.ansNum
+        };
+    
+        //function checks to see if question already exists in final questions array
+        function qExists(q) {
+            var arr = Finalquestions;
+            return arr.some(function(el) {
+                return el.q == q;
+            }); 
+        }
+
+        //if question already exists, then update answer, else push to questions array
+        if (qExists(elem.q)) {
+            
+        }
+        else{
+            Finalquestions.push(elem);
+        }
+        
+        //console log finalquestions array
+        Finalquestions.forEach(element => {
+            console.log(element);
+        });
+    }
+
+    this.setSelected = function(event){
+        // $(event.target).toggleClass('active');
+    }
 };
-   
+
 ko.applyBindings(new QuestionViewModel());
 </script>
 </html>
