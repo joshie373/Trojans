@@ -41,7 +41,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="row text-center">
+    <div id="wrapMain" class="row text-center">
         <!-- Left Column 25% -->
         <div class="col-md-3">
         </div>
@@ -61,13 +61,15 @@
                               <input type="radio" name="options" autocomplete="off" ><span class="empty_fill p-2" data-bind="text: $data.ansNum +': '+$data.answer, click: function(data) { $parent.GetSelected(data); $parent.SetSelected(); }">
                             </label><br>
                         </span>
-                          </div>
+                    </div>
                     <br>
+                    <button type="button" class="btn btn-primary float-left btnCount" id="btnPrev" data-bind="click: function() { clickNext(-1); setQuestion(); setAnswers(); }, disable: firstQuestion">Previous</button>
+                    <button type="button" class="btn btn-primary float-right btnCount" id="btnNext" data-bind="click: function() { clickNext(1); setQuestion(); setAnswers();}, disable: lastQuestion" >Next</button>
                 </div>
+                
                 <button id="btnStart" type="button" class="btn btn-secondary btn-lg btn-block round-heavy-bottom" data-bind="click: function() { startClick(); setQuestion(); setAnswers();}">Start Trivia Now</button>
-            </div>
-            <button type="button" class="btn btn-primary float-left btnCount" id="btnPrev" data-bind="click: function() { clickNext(-1); setQuestion(); setAnswers(); }, disable: firstQuestion">Previous</button>
-            <button type="button" class="btn btn-primary float-right btnCount" id="btnNext" data-bind="click: function() { clickNext(1); setQuestion(); setAnswers();}, disable: lastQuestion" >Next</button>
+                </div>
+            
             <button type="button" id="btnSubmitQuiz" class="btn btn-primary">Submit Quiz</button>
         </div>
 
@@ -95,7 +97,22 @@
             </div>
         </div>
     </div>
+
+
+    <div id="wrapResultsMain" class="row text-center">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div id="resultsMain" class="well bg-secondary round-heavy-bottom">
+                <br>
+                <h3>Results: <span data-bind="text: CalculateResults()+'\%'" class="h3"></span></h3><br>
+                <h5>Rank: <span id="spanRank" data-bind="text: ranking" class="h5"></span></h5>
+                <br>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
 </body>
+
 <script>
 
 //Hides game elements on page load
@@ -103,7 +120,10 @@
     $("#btnPrev").hide();
     $("#triviaMain").hide();
     $("#rightMain").hide();
-    $("#btnSubmitQuiz").hide();
+    $("#btnSubmitQuiz").hide();//commented for dev
+    // $("#btnStart").hide();//comment in live
+
+    $("#resultsMain").hide();
 
 //Jquery functions to make start button more responsive
 $("#btnStart").mouseover(function(){
@@ -122,24 +142,60 @@ $("#btnStart").click(function(){
     $("#btnPrev").show();
     $("#triviaMain").show();
     $("#rightMain").show();
+
+    //applies view model for questions
+    ko.applyBindings(new QuestionViewModel(),wrapMain);
 });
 
+//hides everything except the results div when submit is clicked. 
+$("#btnSubmitQuiz").click(function(){
+    var confirmSubmit = confirm("Are you sure you want to submit?");
+    if (confirmSubmit){
+        $("#triviaMain").hide();
+        $("#rightMain").hide();
+        $("#resultsMain").show();
+        $("#btnSubmitQuiz").hide()
+        ko.applyBindings(new ResultsViewModel(), wrapResultsMain);
+    }
+    else {
+
+    }
+    
+});
+
+
+//GLOBAL for question and answer storage
 var Finalquestions = Array();
 
-//view model creation
+var arrCorrectQuestions =[
+    {q: '1', a: "A"},//question 1 correct
+    {q: '2', a: "A"},//question 2 correct
+    {q: '3', a: "A"},//question 3 correct
+    {q: '4', a: "A"},//question 4 correct
+    {q: '5', a: "A"},//question 5 correct
+    {q: '6', a: "A"},//question 6 correct
+    {q: '7', a: "A"},//question 7 correct
+    {q: '8', a: "A"},//question 8 correct
+    {q: '9', a: "A"},//question 9 correct
+    {q: '10', a: "A"}//question 10 correct
+];
+
+
+
+//view model creation for the questions
 var QuestionViewModel = function(){
     //counter declare
     this.questionCount = ko.observable(0);
-
-    //runs on click of start
-    this.startClick = function(){
-        this.questionCount(1);
-    }
+    // //runs on click of start
+    // this.startClick = function(){
+    //     this.questionCount(1);
+    // }
 
     //changes question forward or backward
     this.clickNext = function(val) {
         this.questionCount(this.questionCount() + parseInt(val));
-        if (this.questionCount()==10) {
+        //if next is clicked AND all questions answered, show submit button
+        if ((this.questionCount()==10)&&(Finalquestions.length==10)) {
             $("#btnSubmitQuiz").show();
         }
     }
@@ -267,13 +323,11 @@ var QuestionViewModel = function(){
     //sets answer text
     this.getAnswers = ko.observableArray("");
     this.setAnswers = function(){
+        //answers array created and assinged using the getter. 
         this.getAnswers(this.questionsArray()[this.questionCount()-1].answers());//good
 
-
-        // ================NEED TO FIX=========================
         // block is to determine if question is already in array, and if so
         // will add the active class of the item in the answer array
-
         //function to return true if question already in array(good)
         function qExists(ques) {
             var arr = Finalquestions;
@@ -309,32 +363,30 @@ var QuestionViewModel = function(){
                     ansVal = 3;
                     break;
             }
-            // *******FIX HERE*********
 
-            // $('.lblAnser').addClass('active');
-            // alert("answer exisits "+ ansVal);
+            //changes class to selected of the answer already in the array
+            $('.lblAnser:eq('+ansVal+')').addClass('active');
+            
+        }//end if q exists
 
-            //*****************************
-            // ================ END NEED TO FIX=========================
-        }
-
-    }//end
+    }//end set answers
     
     //set selected question
     this.SetSelected = function(){
         var qid = "#q" + this.questionCount();
         $(qid).addClass('btn-success');
+
     }
 
     //get selected answer
     this.GetSelected = function(val){
+
+        //sets temp object for adding to finalquestion array
         var elem = {
             q: this.questionCount(),
             a: val.ansNum
         };
     
-        
-
         //function checks to see if question already exists in final questions array
         function qExists(ques) {
             var arr = Finalquestions;
@@ -345,13 +397,29 @@ var QuestionViewModel = function(){
 
         //if question already exists, then update answer, else push to questions array
         if (qExists(elem.q)) {
-            //add updater to finalquestions here
+            //updates answer if changed in global 
+            function update(nameKey, prop, myArray){
+                for (var i=0; i < myArray.length; i++) {
+                    if (myArray[i]['q']=== nameKey) {
+                        myArray[i]['a'] = elem.a ;
+                    }
+                }
+            }
+            //updates answer function.
+            update(this.questionCount(),"a", Finalquestions);
+
         }
         else{
+            //adds question and answer to the final questions array global once answered
             Finalquestions.push(elem);
+            //shows submit button if all questions answered
+            if (Finalquestions.length==10) {
+                $("#btnSubmitQuiz").show();
+            }
         }
         
         //console log finalquestions array(output for debugging)
+        Finalquestions.sort((x,y) => (x.q > y.q) ? 1: -1);//sorts question array numerically by question number
         Finalquestions.forEach(element => {
             console.log(element);
         });
@@ -363,8 +431,68 @@ var QuestionViewModel = function(){
         var countRevert = qid.replace( /^\D+/g, '');
         this.questionCount(parseInt(countRevert));
     }
+    //set defaults for first question.
+    this.questionCount(1);
+    this.setQuestion();
+    this.setAnswers();
 };
 
-ko.applyBindings(new QuestionViewModel());
+//view model for the results.
+var ResultsViewModel = function(){
+
+    arrCorrectQuestions.sort((x,y) => (x.q > y.q) ? 1: -1);//sorts correct question array numerically by question number
+    Finalquestions.sort((x,y) => (x.q > y.q) ? 1: -1);//sorts question array numerically by question number
+
+    //function to calculate the results of the quiz
+    this.CalculateResults = ko.pureComputed(function(){
+        var percentage = 0;
+        var right = 0;
+        //loops throught the final questions array, and compares it to the correct answers array, and adds 1
+        // to the right variable to get the correct percentage
+        for (let i = 0; i < Finalquestions.length; i++) {
+            let qElem = Finalquestions[i];
+            let cElem = arrCorrectQuestions[i];
+            if (qElem.a != cElem.a) {
+                right = right;
+            }
+            else {
+                right +=  1;
+            }
+             
+        };
+
+        percentage = (right / 10)*100;//change back to 10
+
+        return Math.round(percentage);
+    }, this);
+
+    //assigns and determines ranking
+    this.ranking = ko.pureComputed(function(){
+        var score = this.CalculateResults();
+        var rank = "";
+        switch (true) {
+            case (score >= 80):
+                rank = "Expert!";
+                $("#spanRank").addClass('btn-success');
+                break;
+            case ((score < 80)&&(score >=60 )):
+                rank = "Novice!";
+                $("#spanRank").addClass('btn-warning');
+                break;
+            case (score < 60):
+                rank = "Beginner!";
+                $("#spanRank").addClass('btn-danger');
+                break;
+        
+            default:
+                break;
+        }
+        return rank;
+    },this);
+    
+
+
+};
+
 </script>
 </html>
