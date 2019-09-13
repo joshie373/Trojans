@@ -56,9 +56,9 @@
                     <h3> Question <span data-bind="text: questionCount"></span></h3>
                     <h4 id="question" class="bg-secondary" data-bind="text: getQuestion"></h4>
                     <br>
-                    <div class="btn-group-vertical btn-group-toggle w-50 m-auto" data-toggle="buttons" data-bind='foreach: getAnswers'>
-                            <label class="btn btn-info p-0" ><span class="empty_fill p-1" data-bind="text: $data.ansNum +': '+$data.answer, click: function(data,event) { $parent.GetSelected(data); $parent.setSelected(event); }">
-                              <input type="radio" name="options" autocomplete="off" >
+                    <div class="btn-group btn-group-vertical btn-group-toggle w-50 m-auto" data-toggle="buttons" data-bind='foreach: getAnswers'>
+                            <label class="lblAnser btn btn-info p-0" >
+                              <input type="radio" name="options" autocomplete="off" ><span class="empty_fill p-2" data-bind="text: $data.ansNum +': '+$data.answer, click: function(data) { $parent.GetSelected(data); $parent.SetSelected(); }">
                             </label><br>
                         </span>
                           </div>
@@ -68,6 +68,7 @@
             </div>
             <button type="button" class="btn btn-primary float-left btnCount" id="btnPrev" data-bind="click: function() { clickNext(-1); setQuestion(); setAnswers(); }, disable: firstQuestion">Previous</button>
             <button type="button" class="btn btn-primary float-right btnCount" id="btnNext" data-bind="click: function() { clickNext(1); setQuestion(); setAnswers();}, disable: lastQuestion" >Next</button>
+            <button type="button" id="btnSubmitQuiz" class="btn btn-primary">Submit Quiz</button>
         </div>
 
         <!-- Right Column 25% -->
@@ -76,17 +77,19 @@
                 <!-- Div for questions list -->
                 <div class="well" id="rightMain">
                     <h3 class="h3 alert-info round-heavy-top p-3 mb-0">Questions</h3>
-                    <div id="questionsMain" class="well bg-secondary mt-0 round-heavy-bottom">
-                        <p id="q1" class="m-0 ">Question 1</p>
-                        <p id="q2" class="m-1 ">Question 2</p>
-                        <p id="q3" class="m-1 ">Question 3</p>
-                        <p id="q4" class="m-1 ">Question 4</p>
-                        <p id="q5" class="m-1 ">Question 5</p>
-                        <p id="q6" class="m-1 ">Question 6</p>
-                        <p id="q7" class="m-1 ">Question 7</p>
-                        <p id="q8" class="m-1 ">Question 8</p>
-                        <p id="q9" class="m-1 ">Question 9</p>
-                        <p id="q10" class="m-1 ">Question 10</p>
+                    <div id="questionsMain" class="well bg-secondary mt-0 round-heavy-bottom w-100 h-100">
+                        <div class="btn-group-vertical w-100" data-toggle="buttons">
+                                <button class="btn btn-secondary w-100 mb-1 " data-bind="click: function(data,event) { goToQuestion(event); getQuestion();setQuestion(); setAnswers() }" id="q1" >Question 1</button >
+                                <button class="btn btn-secondary w-100 mb-1 " data-bind="click: function(data,event) { goToQuestion(event); getQuestion();setQuestion(); setAnswers() }" id="q2" >Question 2</button >
+                                <button class="btn btn-secondary w-100 mb-1 " data-bind="click: function(data,event) { goToQuestion(event); getQuestion();setQuestion(); setAnswers() }" id="q3" >Question 3</button >
+                                <button class="btn btn-secondary w-100 mb-1 " data-bind="click: function(data,event) { goToQuestion(event); getQuestion();setQuestion(); setAnswers() }" id="q4" >Question 4</button >
+                                <button class="btn btn-secondary w-100 mb-1 " data-bind="click: function(data,event) { goToQuestion(event); getQuestion();setQuestion(); setAnswers() }" id="q5" >Question 5</button >
+                                <button class="btn btn-secondary w-100 mb-1 " data-bind="click: function(data,event) { goToQuestion(event); getQuestion();setQuestion(); setAnswers() }" id="q6" >Question 6</button >
+                                <button class="btn btn-secondary w-100 mb-1 " data-bind="click: function(data,event) { goToQuestion(event); getQuestion();setQuestion(); setAnswers() }" id="q7" >Question 7</button >
+                                <button class="btn btn-secondary w-100 mb-1 " data-bind="click: function(data,event) { goToQuestion(event); getQuestion();setQuestion(); setAnswers() }" id="q8" >Question 8</button >
+                                <button class="btn btn-secondary w-100 mb-1 " data-bind="click: function(data,event) { goToQuestion(event); getQuestion();setQuestion(); setAnswers() }" id="q9" >Question 9</button >
+                                <button class="btn btn-secondary w-100 mb-1 " data-bind="click: function(data,event) { goToQuestion(event); getQuestion();setQuestion(); setAnswers() }" id="q10" >Question 10</button >
+                        </div>
                     </div>
                 </div>
             </div>
@@ -96,12 +99,11 @@
 <script>
 
 //Hides game elements on page load
-$(document).ready(function() {
     $("#btnNext").hide();
     $("#btnPrev").hide();
     $("#triviaMain").hide();
     $("#rightMain").hide();
-});
+    $("#btnSubmitQuiz").hide();
 
 //Jquery functions to make start button more responsive
 $("#btnStart").mouseover(function(){
@@ -137,6 +139,9 @@ var QuestionViewModel = function(){
     //changes question forward or backward
     this.clickNext = function(val) {
         this.questionCount(this.questionCount() + parseInt(val));
+        if (this.questionCount()==10) {
+            $("#btnSubmitQuiz").show();
+        }
     }
 
     //prevents previous from being clicked on the first question
@@ -153,104 +158,104 @@ var QuestionViewModel = function(){
     this.questionsArray = ko.observableArray([
         //question 1
         {
-        question: ko.observable("this is q1"),
-        answers : ko.observableArray([
-            { ansNum: "A", answer: "answer 1"},
-            { ansNum: "B", answer: "answer 21"},
-            { ansNum: "C", answer: "answer 3"},
-            { ansNum: "D", answer: "answer 4"}
-        ])
-    },
-    //question 2
-    {
-        question: ko.observable("this is q2"),
-        answers : ko.observableArray([
-            { ansNum: "A", answer: "answer 1"},
-            { ansNum: "B", answer: "answer 22"},
-            { ansNum: "C", answer: "answer 3"},
-            { ansNum: "D", answer: "answer 4"}
-        ])
-    },
-    //question 3
-    {
-        question: ko.observable("this is q3"),
-        answers : ko.observableArray([
-            { ansNum: "A", answer: "answer 1"},
-            { ansNum: "B", answer: "answer 23"},
-            { ansNum: "C", answer: "answer 3"},
-            { ansNum: "D", answer: "answer 4"}
-        ])
-    },
-    //question 4
-    {
-        question: ko.observable("this is q4"),
-        answers : ko.observableArray([
-            { ansNum: "A", answer: "answer 1"},
-            { ansNum: "B", answer: "answer 24"},
-            { ansNum: "C", answer: "answer 3"},
-            { ansNum: "D", answer: "answer 4"}
-        ])
-    },
-    //question 5
-    {
-        question: ko.observable("this is q5"),
-        answers : ko.observableArray([
-            { ansNum: "A", answer: "answer 1"},
-            { ansNum: "B", answer: "answer 25"},
-            { ansNum: "C", answer: "answer 3"},
-            { ansNum: "D", answer: "answer 4"}
-        ])
-    },
-    //question 6
-    {
-        question: ko.observable("this is q6"),
-        answers : ko.observableArray([
-            { ansNum: "A", answer: "answer 1"},
-            { ansNum: "B", answer: "answer 26"},
-            { ansNum: "C", answer: "answer 3"},
-            { ansNum: "D", answer: "answer 4"}
-        ])
-    },
-    //question 7
-    {
-        question: ko.observable("this is q7"),
-        answers : ko.observableArray([
-            { ansNum: "A", answer: "answer 1"},
-            { ansNum: "B", answer: "answer 27"},
-            { ansNum: "C", answer: "answer 3"},
-            { ansNum: "D", answer: "answer 4"}
-        ])
-    },
-    //question 8
-    {
-        question: ko.observable("this is q8"),
-        answers : ko.observableArray([
-            { ansNum: "A", answer: "answer 1"},
-            { ansNum: "B", answer: "answer 28"},
-            { ansNum: "C", answer: "answer 3"},
-            { ansNum: "D", answer: "answer 4"}
-        ])
-    },
-    //question 9
-    {
-        question: ko.observable("this is q9"),
-        answers : ko.observableArray([
-            { ansNum: "A", answer: "answer 1"},
-            { ansNum: "B", answer: "answer 29"},
-            { ansNum: "C", answer: "answer 3"},
-            { ansNum: "D", answer: "answer 4"}
-        ])
-    },
-    //question 10
-    {
-        question: ko.observable("this is q10"),
-        answers : ko.observableArray([
-            { ansNum: "A", answer: "answer 1"},
-            { ansNum: "B", answer: "answer 20"},
-            { ansNum: "C", answer: "answer 3"},
-            { ansNum: "D", answer: "answer 4"}
-        ])
-    }
+            question: ko.observable("this is q1"),
+            answers : ko.observableArray([
+                { ansNum: "A", answer: "answer 1"},
+                { ansNum: "B", answer: "answer 21"},
+                { ansNum: "C", answer: "answer 3"},
+                { ansNum: "D", answer: "answer 4"}
+            ])
+        },
+        //question 2
+        {
+            question: ko.observable("this is q2"),
+            answers : ko.observableArray([
+                { ansNum: "A", answer: "answer 1"},
+                { ansNum: "B", answer: "answer 22"},
+                { ansNum: "C", answer: "answer 3"},
+                { ansNum: "D", answer: "answer 4"}
+            ])
+        },
+        //question 3
+        {
+            question: ko.observable("this is q3"),
+            answers : ko.observableArray([
+                { ansNum: "A", answer: "answer 1"},
+                { ansNum: "B", answer: "answer 23"},
+                { ansNum: "C", answer: "answer 3"},
+                { ansNum: "D", answer: "answer 4"}
+            ])
+        },
+        //question 4
+        {
+            question: ko.observable("this is q4"),
+            answers : ko.observableArray([
+                { ansNum: "A", answer: "answer 1"},
+                { ansNum: "B", answer: "answer 24"},
+                { ansNum: "C", answer: "answer 3"},
+                { ansNum: "D", answer: "answer 4"}
+            ])
+        },
+        //question 5
+        {
+            question: ko.observable("this is q5"),
+            answers : ko.observableArray([
+                { ansNum: "A", answer: "answer 1"},
+                { ansNum: "B", answer: "answer 25"},
+                { ansNum: "C", answer: "answer 3"},
+                { ansNum: "D", answer: "answer 4"}
+            ])
+        },
+        //question 6
+        {
+            question: ko.observable("this is q6"),
+            answers : ko.observableArray([
+                { ansNum: "A", answer: "answer 1"},
+                { ansNum: "B", answer: "answer 26"},
+                { ansNum: "C", answer: "answer 3"},
+                { ansNum: "D", answer: "answer 4"}
+            ])
+        },
+        //question 7
+        {
+            question: ko.observable("this is q7"),
+            answers : ko.observableArray([
+                { ansNum: "A", answer: "answer 1"},
+                { ansNum: "B", answer: "answer 27"},
+                { ansNum: "C", answer: "answer 3"},
+                { ansNum: "D", answer: "answer 4"}
+            ])
+        },
+        //question 8
+        {
+            question: ko.observable("this is q8"),
+            answers : ko.observableArray([
+                { ansNum: "A", answer: "answer 1"},
+                { ansNum: "B", answer: "answer 28"},
+                { ansNum: "C", answer: "answer 3"},
+                { ansNum: "D", answer: "answer 4"}
+            ])
+        },
+        //question 9
+        {
+            question: ko.observable("this is q9"),
+            answers : ko.observableArray([
+                { ansNum: "A", answer: "answer 1"},
+                { ansNum: "B", answer: "answer 29"},
+                { ansNum: "C", answer: "answer 3"},
+                { ansNum: "D", answer: "answer 4"}
+            ])
+        },
+        //question 10
+        {
+            question: ko.observable("this is q10"),
+            answers : ko.observableArray([
+                { ansNum: "A", answer: "answer 1"},
+                { ansNum: "B", answer: "answer 20"},
+                { ansNum: "C", answer: "answer 3"},
+                { ansNum: "D", answer: "answer 4"}
+            ])
+        }
     ]);
 
     //sets question text
@@ -262,10 +267,65 @@ var QuestionViewModel = function(){
     //sets answer text
     this.getAnswers = ko.observableArray("");
     this.setAnswers = function(){
-        this.getAnswers(this.questionsArray()[this.questionCount()-1].answers());
+        this.getAnswers(this.questionsArray()[this.questionCount()-1].answers());//good
+
+
+        // ================NEED TO FIX=========================
+        // block is to determine if question is already in array, and if so
+        // will add the active class of the item in the answer array
+
+        //function to return true if question already in array(good)
+        function qExists(ques) {
+            var arr = Finalquestions;
+            return arr.some(function(el) {
+                return el.q == ques;
+            }); 
+        }
+        
+        //switch returns answer letter (good)
+        if (qExists(this.questionCount())) {
+            //generic search function
+            function search(nameKey, prop, myArray){
+                for (var i=0; i < myArray.length; i++) {
+                    if (myArray[i]['q']=== nameKey) {
+                        return myArray[i][prop];
+                    }
+                }
+            }
+            //uses search function to return a value of current question(good)
+            var existAnswer = search(this.questionCount(),"a", Finalquestions);
+            var ansVal = "";
+            switch (existAnswer) {
+                case 'A':
+                    ansVal = 0;
+                    break;
+                case 'B':
+                    ansVal = 1;
+                    break;
+                case 'C':
+                    ansVal = 2;
+                    break;
+                case 'D':
+                    ansVal = 3;
+                    break;
+            }
+            // *******FIX HERE*********
+
+            // $('.lblAnser').addClass('active');
+            // alert("answer exisits "+ ansVal);
+
+            //*****************************
+            // ================ END NEED TO FIX=========================
+        }
+
+    }//end
+    
+    //set selected question
+    this.SetSelected = function(){
+        var qid = "#q" + this.questionCount();
+        $(qid).addClass('btn-success');
     }
-    
-    
+
     //get selected answer
     this.GetSelected = function(val){
         var elem = {
@@ -273,30 +333,35 @@ var QuestionViewModel = function(){
             a: val.ansNum
         };
     
+        
+
         //function checks to see if question already exists in final questions array
-        function qExists(q) {
+        function qExists(ques) {
             var arr = Finalquestions;
             return arr.some(function(el) {
-                return el.q == q;
+                return el.q == ques;
             }); 
         }
 
         //if question already exists, then update answer, else push to questions array
         if (qExists(elem.q)) {
-            
+            //add updater to finalquestions here
         }
         else{
             Finalquestions.push(elem);
         }
         
-        //console log finalquestions array
+        //console log finalquestions array(output for debugging)
         Finalquestions.forEach(element => {
             console.log(element);
         });
     }
 
-    this.setSelected = function(event){
-        // $(event.target).toggleClass('active');
+    //handles go directly to question from question pane on right
+    this.goToQuestion = function(event){
+        var qid = event.target.id;
+        var countRevert = qid.replace( /^\D+/g, '');
+        this.questionCount(parseInt(countRevert));
     }
 };
 
