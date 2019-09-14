@@ -104,9 +104,16 @@
         <div class="col-md-6">
             <div id="resultsMain" class="well bg-secondary round-heavy-bottom">
                 <br>
-                <h3>Results: <span data-bind="text: CalculateResults()+'\%'" class="h3"></span></h3><br>
-                <h5>Rank: <span id="spanRank" data-bind="text: ranking" class="h5"></span></h5>
+                <h3>Results: <span data-bind="text: CalculateResults()+'\%'" class="h3"></span></h3>
+                <h5>Rank: <span id="spanRank" data-bind="text: ranking() + '\!'" class="h5"></span></h5>
+                <image data-bind="attr:{src: emoji}" class="img-fluid" width="250px"></image><br>
                 <br>
+                <button id="btnShowResults" class="btn btn-light" data-bind="click: resultsQuestions">Review Questions</button>
+                <br>
+                <br>
+                <div id="divQuestionResults">
+
+                </div>
             </div>
         </div>
         <div class="col-md-3"></div>
@@ -122,6 +129,7 @@
     $("#rightMain").hide();
     $("#btnSubmitQuiz").hide();//commented for dev
     // $("#btnStart").hide();//comment in live
+    $("#divQuestionResults").hide();
 
     $("#resultsMain").hide();
 
@@ -163,6 +171,10 @@ $("#btnSubmitQuiz").click(function(){
     
 });
 
+//jquery to hide results until button clicked. 
+$("#btnShowResults").click(function(){
+    $("#divQuestionResults").show();
+});
 
 //GLOBAL for question and answer storage
 var Finalquestions = Array();
@@ -180,7 +192,7 @@ var arrCorrectQuestions =[
     {q: '10', a: "A"}//question 10 correct
 ];
 
-
+var RESULTS_CLICKED = false;
 
 //view model creation for the questions
 var QuestionViewModel = function(){
@@ -384,7 +396,8 @@ var QuestionViewModel = function(){
         //sets temp object for adding to finalquestion array
         var elem = {
             q: this.questionCount(),
-            a: val.ansNum
+            a: val.ansNum,
+            aVal: val.answer
         };
     
         //function checks to see if question already exists in final questions array
@@ -412,7 +425,7 @@ var QuestionViewModel = function(){
         else{
             //adds question and answer to the final questions array global once answered
             Finalquestions.push(elem);
-            //shows submit button if all questions answered
+            //shows submit button if all questions answered************
             if (Finalquestions.length==10) {
                 $("#btnSubmitQuiz").show();
             }
@@ -472,15 +485,15 @@ var ResultsViewModel = function(){
         var rank = "";
         switch (true) {
             case (score >= 80):
-                rank = "Expert!";
+                rank = "Expert";
                 $("#spanRank").addClass('btn-success');
                 break;
             case ((score < 80)&&(score >=60 )):
-                rank = "Novice!";
+                rank = "Novice";
                 $("#spanRank").addClass('btn-warning');
                 break;
             case (score < 60):
-                rank = "Beginner!";
+                rank = "Beginner";
                 $("#spanRank").addClass('btn-danger');
                 break;
         
@@ -490,7 +503,61 @@ var ResultsViewModel = function(){
         return rank;
     },this);
     
+    //adds image based on rank
+    this.emoji = ko.pureComputed(function(){
+        var src = "";
+        switch (this.ranking()) {
+            case "Expert":
+                src="../images/happy-emoticon.png";
+                break;
+            case "Novice":
+                src="../images/nuetral-emoticon.png";
+                break;
+            case "Beginner":
+                src="../images/sad-emoticon.png";
+                break;
+        }
+        return src;
+    },this);
 
+    //shows questions results
+    //*********FIX HERE******************
+    //*********still need to find way to get ans/ques values into results(maybe using mapping)**************
+    this.resultsQuestions = function(){
+        if (!RESULTS_CLICKED) {
+            
+            for (let i = 0; i < Finalquestions.length; i++) {
+                let qElem = Finalquestions[i];
+                let cElem = arrCorrectQuestions[i];
+                
+                //shows correct answer and wrong answer if answer wrong, shows right, 
+                //applies colorful bootstrap styling as well
+                if (qElem.a != cElem.a) {
+
+                    $("#divQuestionResults").append(
+                        "<div class='alert-dark w-75 m-auto'>"+
+                            "<h6 class='h6 text-danger bg-light'>Question "+qElem.q +"</h6>"+
+                            "<p>"+
+                                "<b>Your Answer: </b>"+qElem.a+"<br>"+
+                            "<b>Correct Answer: </b>"+cElem.a+"</p>"+
+                        "<hr></div>"
+                    );
+                }
+                else {
+                    $("#divQuestionResults").append(
+                        "<div class='alert-dark w-75 m-auto'>"+
+                            "<h6 class='h6 text-success bg-light'>Question "+qElem.q +"</h6>"+
+                            "<p>"+
+                                "<b>Your Answer: </b>"+qElem.a+"</p>"+
+                        "<hr></div>"
+                    );
+                }
+                
+            };
+            $("#divQuestionResults").append("<br>");
+            RESULTS_CLICKED =true;
+        }
+    };
 
 };
 
