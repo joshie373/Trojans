@@ -1,4 +1,4 @@
-<!-- 
+<!--
 ============================================
 ; Title: index
 ; Authors: Joshua Hughes
@@ -26,14 +26,9 @@
         <script src="../knockout-3.5.0.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-        <style>
-     
-
-        </style>
-
-
     </head>
-<body>
+	<body class="trivia container-fluid">
+
     <!-- Header -->
     <div class="card-body text-center col-sm-6 offset-sm-3" >
         <img class="img-fluid"  src="../images/Trojans.png" alt="Trojans">
@@ -49,7 +44,7 @@
         <!-- Center Column 50% -->
         <div class="col-md-6">
             <!-- Main content Div -->
-            <div class="well" id="centerMain">
+            <div class="well main" id="centerMain">
                 <h3 class="h3 alert-primary p-3 round-heavy-top mb-0">Trivia</h3>
                 <div id="triviaMain" class="well bg-secondary round-heavy-bottom">
                     <br>
@@ -62,14 +57,16 @@
                             </label><br>
                         </span>
                     </div>
-                    <br>
-                    <button type="button" class="btn btn-primary float-left btnCount" id="btnPrev" data-bind="click: function() { clickNext(-1); setQuestion(); setAnswers(); }, disable: firstQuestion">Previous</button>
-                    <button type="button" class="btn btn-primary float-right btnCount" id="btnNext" data-bind="click: function() { clickNext(1); setQuestion(); setAnswers();}, disable: lastQuestion" >Next</button>
-                </div>
-                
+					<br>
+					<div class="btn-wrapper">
+						<button type="button" class="btn btn-primary float-left btnCount" id="btnPrev" data-bind="click: function() { clickNext(-1); setQuestion(); setAnswers(); }, disable: firstQuestion">Previous</button>
+						<button type="button" class="btn btn-primary float-right btnCount" id="btnNext" data-bind="click: function() { clickNext(1); setQuestion(); setAnswers();}, disable: lastQuestion" >Next</button>
+					</div>
+				</div>
+
                 <button id="btnStart" type="button" class="btn btn-secondary btn-lg btn-block round-heavy-bottom" data-bind="click: function() { startClick(); setQuestion(); setAnswers();}">Start Trivia Now</button>
                 </div>
-            
+
             <button type="button" id="btnSubmitQuiz" class="btn btn-primary">Submit Quiz</button>
         </div>
 
@@ -77,7 +74,7 @@
         <div class="col-md-3">
             <div class="col-sm-10 offset-sm-1 text-center">
                 <!-- Div for questions list -->
-                <div class="well" id="rightMain">
+                <div class="well sidebar" id="rightMain">
                     <h3 class="h3 alert-info round-heavy-top p-3 mb-0">Questions</h3>
                     <div id="questionsMain" class="well bg-secondary mt-0 round-heavy-bottom w-100 h-100">
                         <div class="btn-group-vertical w-100" data-toggle="buttons">
@@ -98,7 +95,6 @@
         </div>
     </div>
 
-
     <div id="wrapResultsMain" class="row text-center">
         <div class="col-md-3"></div>
         <div class="col-md-6">
@@ -108,7 +104,7 @@
                 <h5>Rank: <span id="spanRank" data-bind="text: ranking() + '\!'" class="h5"></span></h5>
                 <image data-bind="attr:{src: emoji}" class="img-fluid" width="250px"></image><br>
                 <br>
-                <button id="btnShowResults" class="btn btn-light" data-bind="click: resultsQuestions">Review Questions</button>
+                <button id="btnShowResults" class="btn btn-primary" data-bind="click: resultsQuestions">Review Questions</button>
                 <br>
                 <br>
                 <div id="divQuestionResults">
@@ -155,7 +151,7 @@ $("#btnStart").click(function(){
     ko.applyBindings(new QuestionViewModel(),wrapMain);
 });
 
-//hides everything except the results div when submit is clicked. 
+//hides everything except the results div when submit is clicked.
 $("#btnSubmitQuiz").click(function(){
     var confirmSubmit = confirm("Are you sure you want to submit?");
     if (confirmSubmit){
@@ -168,10 +164,10 @@ $("#btnSubmitQuiz").click(function(){
     else {
 
     }
-    
+
 });
 
-//jquery to hide results until button clicked. 
+//jquery to hide results until button clicked.
 $("#btnShowResults").click(function(){
     $("#divQuestionResults").show();
 });
@@ -180,16 +176,16 @@ $("#btnShowResults").click(function(){
 var Finalquestions = Array();
 
 var arrCorrectQuestions =[
-    {q: '1', a: "A"},//question 1 correct
-    {q: '2', a: "A"},//question 2 correct
-    {q: '3', a: "A"},//question 3 correct
-    {q: '4', a: "A"},//question 4 correct
-    {q: '5', a: "A"},//question 5 correct
-    {q: '6', a: "A"},//question 6 correct
-    {q: '7', a: "A"},//question 7 correct
-    {q: '8', a: "A"},//question 8 correct
-    {q: '9', a: "A"},//question 9 correct
-    {q: '10', a: "A"}//question 10 correct
+    {q: '0', a: "C"},//question 1 correct
+    {q: '1', a: "C"},//question 2 correct
+    {q: '2', a: "B"},//question 3 correct
+    {q: '3', a: "C"},//question 4 correct
+    {q: '4', a: "A"},//question 5 correct
+    {q: '5', a: "B"},//question 6 correct
+    {q: '6', a: "C"},//question 7 correct
+    {q: '7', a: "B"},//question 8 correct
+    {q: '8', a: "D"},//question 9 correct
+    {q: '9', a: "B"}//question 10 correct
 ];
 
 var RESULTS_CLICKED = false;
@@ -226,102 +222,102 @@ var QuestionViewModel = function(){
     this.questionsArray = ko.observableArray([
         //question 1
         {
-            question: ko.observable("this is q1"),
+            question: ko.observable("Which function lets you register a function to be invoked repeatedly after a certain time?"),
             answers : ko.observableArray([
-                { ansNum: "A", answer: "answer 1"},
-                { ansNum: "B", answer: "answer 21"},
-                { ansNum: "C", answer: "answer 3"},
-                { ansNum: "D", answer: "answer 4"}
+                { ansNum: "A", answer: "setTimeout()"},
+                { ansNum: "B", answer: "setTotaltime()"},
+                { ansNum: "C", answer: "setInterval()"},
+                { ansNum: "D", answer: "settime()"}
             ])
         },
         //question 2
         {
-            question: ko.observable("this is q2"),
+            question: ko.observable("Which are the events that have default actions that can be canceled by event handlers?"),
             answers : ko.observableArray([
-                { ansNum: "A", answer: "answer 1"},
-                { ansNum: "B", answer: "answer 22"},
-                { ansNum: "C", answer: "answer 3"},
-                { ansNum: "D", answer: "answer 4"}
+                { ansNum: "A", answer: "Reset and form-related events"},
+                { ansNum: "B", answer: "Submit and form-related events"},
+                { ansNum: "C", answer: "Submit and reset events"},
+                { ansNum: "D", answer: "Form-related events"}
             ])
         },
         //question 3
         {
-            question: ko.observable("this is q3"),
+            question: ko.observable("What is the keyword you use to refer to an object through which it was invoked?"),
             answers : ko.observableArray([
-                { ansNum: "A", answer: "answer 1"},
-                { ansNum: "B", answer: "answer 23"},
-                { ansNum: "C", answer: "answer 3"},
-                { ansNum: "D", answer: "answer 4"}
+                { ansNum: "A", answer: "from"},
+                { ansNum: "B", answer: "this"},
+                { ansNum: "C", answer: "variable"},
+                { ansNum: "D", answer: "object"}
             ])
         },
         //question 4
         {
-            question: ko.observable("this is q4"),
+            question: ko.observable("Which attribute is used to specify that the script is executed when the page has finished parsing?"),
             answers : ko.observableArray([
-                { ansNum: "A", answer: "answer 1"},
-                { ansNum: "B", answer: "answer 24"},
-                { ansNum: "C", answer: "answer 3"},
-                { ansNum: "D", answer: "answer 4"}
+                { ansNum: "A", answer: "parse"},
+                { ansNum: "B", answer: "sync"},
+                { ansNum: "C", answer: "defer"},
+                { ansNum: "D", answer: "type"}
             ])
         },
         //question 5
         {
-            question: ko.observable("this is q5"),
+            question: ko.observable("A scripting language is a"),
             answers : ko.observableArray([
-                { ansNum: "A", answer: "answer 1"},
-                { ansNum: "B", answer: "answer 25"},
-                { ansNum: "C", answer: "answer 3"},
-                { ansNum: "D", answer: "answer 4"}
+                { ansNum: "A", answer: "High level programming language"},
+                { ansNum: "B", answer: "Assembly level programming language"},
+                { ansNum: "C", answer: "Machine level programming language"},
+                { ansNum: "D", answer: "Low level programming language"}
             ])
         },
         //question 6
         {
-            question: ko.observable("this is q6"),
+            question: ko.observable("The properties() method is a"),
             answers : ko.observableArray([
-                { ansNum: "A", answer: "answer 1"},
-                { ansNum: "B", answer: "answer 26"},
-                { ansNum: "C", answer: "answer 3"},
-                { ansNum: "D", answer: "answer 4"}
+                { ansNum: "A", answer: "Enumerable method"},
+                { ansNum: "B", answer: "Non-enumerable method"},
+                { ansNum: "C", answer: "Operational method"},
+                { ansNum: "D", answer: "Calling method"}
             ])
         },
         //question 7
         {
-            question: ko.observable("this is q7"),
+            question: ko.observable("What is the opposite approach to the lexical scoping?"),
             answers : ko.observableArray([
-                { ansNum: "A", answer: "answer 1"},
-                { ansNum: "B", answer: "answer 27"},
-                { ansNum: "C", answer: "answer 3"},
-                { ansNum: "D", answer: "answer 4"}
+                { ansNum: "A", answer: "Literal scoping"},
+                { ansNum: "B", answer: "Static scoping"},
+                { ansNum: "C", answer: "Dynamic scoping"},
+                { ansNum: "D", answer: "Generic scoping"}
             ])
         },
         //question 8
         {
-            question: ko.observable("this is q8"),
+            question: ko.observable("What will happen if a return statement does not have an associated expression?"),
             answers : ko.observableArray([
-                { ansNum: "A", answer: "answer 1"},
-                { ansNum: "B", answer: "answer 28"},
-                { ansNum: "C", answer: "answer 3"},
-                { ansNum: "D", answer: "answer 4"}
+                { ansNum: "A", answer: "It returns the value 0"},
+                { ansNum: "B", answer: "It returns the undefined value"},
+                { ansNum: "C", answer: "It will throw an exception"},
+                { ansNum: "D", answer: "It will throw an error"}
             ])
         },
         //question 9
         {
-            question: ko.observable("this is q9"),
+            question: ko.observable("The function stops its execution when it encounters?"),
             answers : ko.observableArray([
-                { ansNum: "A", answer: "answer 1"},
-                { ansNum: "B", answer: "answer 29"},
-                { ansNum: "C", answer: "answer 3"},
-                { ansNum: "D", answer: "answer 4"}
+                { ansNum: "A", answer: "continue statement"},
+                { ansNum: "B", answer: "break statement"},
+                { ansNum: "C", answer: "goto statement"},
+                { ansNum: "D", answer: "return statement"}
             ])
         },
         //question 10
         {
-            question: ko.observable("this is q10"),
+            question: ko.observable("What kind of scoping does JavaScript use?"),
             answers : ko.observableArray([
-                { ansNum: "A", answer: "answer 1"},
-                { ansNum: "B", answer: "answer 20"},
-                { ansNum: "C", answer: "answer 3"},
-                { ansNum: "D", answer: "answer 4"}
+                { ansNum: "A", answer: "Literal"},
+                { ansNum: "B", answer: "Lexical"},
+                { ansNum: "C", answer: "Segmental"},
+                { ansNum: "D", answer: "Sequential"}
             ])
         }
     ]);
@@ -335,7 +331,7 @@ var QuestionViewModel = function(){
     //sets answer text
     this.getAnswers = ko.observableArray("");
     this.setAnswers = function(){
-        //answers array created and assinged using the getter. 
+        //answers array created and assigned using the getter.
         this.getAnswers(this.questionsArray()[this.questionCount()-1].answers());//good
 
         // block is to determine if question is already in array, and if so
@@ -345,9 +341,9 @@ var QuestionViewModel = function(){
             var arr = Finalquestions;
             return arr.some(function(el) {
                 return el.q == ques;
-            }); 
+            });
         }
-        
+
         //switch returns answer letter (good)
         if (qExists(this.questionCount())) {
             //generic search function
@@ -378,11 +374,11 @@ var QuestionViewModel = function(){
 
             //changes class to selected of the answer already in the array
             $('.lblAnser:eq('+ansVal+')').addClass('active');
-            
+
         }//end if q exists
 
     }//end set answers
-    
+
     //set selected question
     this.SetSelected = function(){
         var qid = "#q" + this.questionCount();
@@ -393,24 +389,24 @@ var QuestionViewModel = function(){
     //get selected answer
     this.GetSelected = function(val){
 
-        //sets temp object for adding to finalquestion array
+        //sets temp object for adding to final question array
         var elem = {
             q: this.questionCount(),
             a: val.ansNum,
             aVal: val.answer
         };
-    
+
         //function checks to see if question already exists in final questions array
         function qExists(ques) {
             var arr = Finalquestions;
             return arr.some(function(el) {
                 return el.q == ques;
-            }); 
+            });
         }
 
         //if question already exists, then update answer, else push to questions array
         if (qExists(elem.q)) {
-            //updates answer if changed in global 
+            //updates answer if changed in global
             function update(nameKey, prop, myArray){
                 for (var i=0; i < myArray.length; i++) {
                     if (myArray[i]['q']=== nameKey) {
@@ -430,7 +426,7 @@ var QuestionViewModel = function(){
                 $("#btnSubmitQuiz").show();
             }
         }
-        
+
         //console log finalquestions array(output for debugging)
         Finalquestions.sort((x,y) => (x.q > y.q) ? 1: -1);//sorts question array numerically by question number
         Finalquestions.forEach(element => {
@@ -471,7 +467,7 @@ var ResultsViewModel = function(){
             else {
                 right +=  1;
             }
-             
+
         };
 
         percentage = (right / 10)*100;//change back to 10
@@ -496,13 +492,13 @@ var ResultsViewModel = function(){
                 rank = "Beginner";
                 $("#spanRank").addClass('btn-danger');
                 break;
-        
+
             default:
                 break;
         }
         return rank;
     },this);
-    
+
     //adds image based on rank
     this.emoji = ko.pureComputed(function(){
         var src = "";
@@ -525,17 +521,17 @@ var ResultsViewModel = function(){
     //*********still need to find way to get ans/ques values into results(maybe using mapping)**************
     this.resultsQuestions = function(){
         if (!RESULTS_CLICKED) {
-            
+
             for (let i = 0; i < Finalquestions.length; i++) {
                 let qElem = Finalquestions[i];
                 let cElem = arrCorrectQuestions[i];
-                
-                //shows correct answer and wrong answer if answer wrong, shows right, 
+
+                //shows correct answer and wrong answer if answer wrong, shows right,
                 //applies colorful bootstrap styling as well
                 if (qElem.a != cElem.a) {
 
                     $("#divQuestionResults").append(
-                        "<div class='alert-dark w-75 m-auto'>"+
+                        "<div class='alert-light w-75 m-auto'>"+
                             "<h6 class='h6 text-danger bg-light'>Question "+qElem.q +"</h6>"+
                             "<p>"+
                                 "<b>Your Answer: </b>"+qElem.a+"<br>"+
@@ -545,14 +541,14 @@ var ResultsViewModel = function(){
                 }
                 else {
                     $("#divQuestionResults").append(
-                        "<div class='alert-dark w-75 m-auto'>"+
+                        "<div class='alert-light w-75 m-auto'>"+
                             "<h6 class='h6 text-success bg-light'>Question "+qElem.q +"</h6>"+
                             "<p>"+
                                 "<b>Your Answer: </b>"+qElem.a+"</p>"+
                         "<hr></div>"
                     );
                 }
-                
+
             };
             $("#divQuestionResults").append("<br>");
             RESULTS_CLICKED =true;
