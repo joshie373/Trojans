@@ -81,3 +81,8 @@ h4#question {
     margin-top: 1em;
     margin-bottom: 1em;
 }
+
+.sidebar .btn.btn-success {
+    background-color: #51a6ff;
+    color: #ffffff;
+}
