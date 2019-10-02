@@ -389,11 +389,30 @@ var QuestionViewModel = function(){
     //get selected answer
     this.GetSelected = function(val){
 
+        var correctAnsVal = "";
+        var corAnswer = arrCorrectQuestions[this.questionCount()-1].a;
+            switch (corAnswer) {
+                case 'A':
+                    correctAnsVal = 0;
+                    break;
+                case 'B':
+                    correctAnsVal = 1;
+                    break;
+                case 'C':
+                    correctAnsVal = 2;
+                    break;
+                case 'D':
+                    correctAnsVal = 3;
+                    break;
+            }
+
         //sets temp object for adding to final question array
         var elem = {
             q: this.questionCount(),
+            qVal: this.questionsArray()[this.questionCount()-1].question(),
             a: val.ansNum,
-            aVal: val.answer
+            aVal: val.answer,
+            corr_a: this.questionsArray()[this.questionCount()-1].answers()[correctAnsVal].answer
         };
 
         //function checks to see if question already exists in final questions array
@@ -517,14 +536,13 @@ var ResultsViewModel = function(){
     },this);
 
     //shows questions results
-    //*********FIX HERE******************
-    //*********still need to find way to get ans/ques values into results(maybe using mapping)**************
     this.resultsQuestions = function(){
         if (!RESULTS_CLICKED) {
 
             for (let i = 0; i < Finalquestions.length; i++) {
                 let qElem = Finalquestions[i];
                 let cElem = arrCorrectQuestions[i];
+                
 
                 //shows correct answer and wrong answer if answer wrong, shows right,
                 //applies colorful bootstrap styling as well
@@ -533,9 +551,10 @@ var ResultsViewModel = function(){
                     $("#divQuestionResults").append(
                         "<div class='alert-light w-75 m-auto'>"+
                             "<h6 class='h6 text-danger bg-light'>Question "+qElem.q +"</h6>"+
+                            "<p class='text-center'>"+qElem.qVal +"</p><hr>"+
                             "<p>"+
-                                "<b>Your Answer: </b>"+qElem.a+"<br>"+
-                            "<b>Correct Answer: </b>"+cElem.a+"</p>"+
+                                "<span class='alert-danger'><b>Your Answer: </span>"+qElem.a+"</b>: "+qElem.aVal+"<br>"+
+                                "<span class='alert-success'><b>Correct Answer: </span>"+cElem.a+"</b>: "+qElem.corr_a+"</p>"+
                         "<hr></div>"
                     );
                 }
@@ -543,8 +562,9 @@ var ResultsViewModel = function(){
                     $("#divQuestionResults").append(
                         "<div class='alert-light w-75 m-auto'>"+
                             "<h6 class='h6 text-success bg-light'>Question "+qElem.q +"</h6>"+
+                            "<p class='text-center'>"+qElem.qVal +"</p><hr>"+
                             "<p>"+
-                                "<b>Your Answer: </b>"+qElem.a+"</p>"+
+                                "<span class='alert-success'><b>Correct Answer: </span>"+qElem.a+"</b>: "+qElem.aVal+"</p>"+
                         "<hr></div>"
                     );
                 }
